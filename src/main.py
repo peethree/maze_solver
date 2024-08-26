@@ -1,33 +1,30 @@
 from window_class import Window
 from point_class import Point, Line
 from cell_class import Cell
+from maze_class import Maze
 
 
-def main():
-    win = Window(800, 600)
+def main():    
 
-    c = Cell(win)
-    c.has_left_wall = False
-    c.draw(50, 50, 100, 100)    
+    num_rows = 10
+    num_cols = 8
 
-    c = Cell(win)
-    c.has_right_wall = False
-    c.draw(125, 125, 200, 200)    
+    margin = 5
 
-    c2 = Cell(win)
-    c2.has_bottom_wall = False
-    c2.draw(225, 225, 250, 250)
+    win_x = 800
+    win_y = 600
 
-    c = Cell(win)
-    c.has_top_wall = False
-    c.draw(300, 300, 500, 500)
-    c.draw_move(c2, undo=True)
+    cell_size_x = (win_x - 2 * margin) / num_cols
+    cell_size_y = (win_y - 2 * margin) / num_rows
+
+    win = Window(win_x, win_y)
+
+    maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win)
+
+    
 
     win.wait_for_close()
-    
-    
-    
-
+          
 
 if __name__ == "__main__":
     main()
