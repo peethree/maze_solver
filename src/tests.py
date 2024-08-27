@@ -86,6 +86,22 @@ class TestMaze(unittest.TestCase):
                 self.assertTrue(maze._cells[i][j].visited)
 
   
+    def test_reset_visit(self):
+        win_x = 100
+        win_y = 100
+        win = Window(win_x, win_y)
+
+        num_cols = 3
+        num_rows = 4
+        maze = Maze(0, 0, num_rows, num_cols, 10, 10, win)
+        maze._break_walls_r(0, 0)
+        maze._reset_cells_visited()
+        for i in range(num_cols):
+            for j in range(num_rows):
+                self.assertFalse(maze._cells[i][j].visited)
+
+
+
         
 
 if __name__ == "__main__":

@@ -31,6 +31,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         self._cells = []
@@ -72,7 +73,7 @@ class Maze:
 
     def _animate(self):        
         self.win.redraw()   
-        time.sleep(0.05)
+        time.sleep(0.02)
 
     def _break_entrance_and_exit(self):
         # The entrance to the maze will always be at the top of the top-left cell, 
@@ -124,9 +125,8 @@ class Maze:
             direction = random.randrange(len(coordinates))
             next_coord = coordinates[direction]
 
-            
     
-            # remove left wall
+            # remove left wall (and right wall for cell next to it)
             if next_coord[0] == i - 1:
                 self._cells[i][j].has_left_wall = False
                 self._cells[i - 1][j].has_right_wall = False
@@ -148,5 +148,85 @@ class Maze:
 
             # recursively visit the next cell
             self._break_walls_r(next_coord[0], next_coord[1])
+
+
+    def _reset_cells_visited(self):
+        # [[cell, cell, cell], [cell, cell, cell], [cell, cell, cell]]
+
+        # self._cells
+        for column in self._cells:
+            for cell in column:
+                cell.visited = False
+
+
+    def solve(self):
+        # calls the _solve_r method starting at i=0 and j=0. 
+        # It should return True if the maze was solved, False otherwise. This is the same return value as _solve_r.
+
+        if self.solve_r(0, 0) == True:
+            return True
+        
+        return False
+
+    def solve_r(self, i, j):
+        # Call the _animate method.
+        self._animate()
+        
+        current_cell = self._cells[i][j]
+
+        # end cell 
+        end = self._cells[-1][-1]
+
+        # Mark the current cell as visited
+        current_cell.visited = True
+
+        if end.visited == True:
+            return True
+             
+
+        # For each direction:
+                                                                  
+        # If there is a cell in that direction, there is no wall blocking you, and that cell hasn't been visited:
+            
+            # left
+        if i > 0 and not self._cells[i - 1][j].visited and not current_cell.has_left_wall:
+            # Draw a move between the current cell and that cell
+            current_cell.draw_move(self._cells[i - 1][j])
+            # Call _solve_r recursively to move to that cell. If that cell returns True, then just return True and don't worry about the other directions
+            if self.solve_r(i - 1, j) == True:
+                return True
+            # Otherwise, draw an "undo" move between the current cell and the next cell
+            else:
+                current_cell.draw_move(self._cells[i - 1][j], undo=True)
+
+        # right
+        if i < self.num_cols - 1 and not self._cells[i + 1][j].visited and not current_cell.has_right_wall:
+            current_cell.draw_move(self._cells[i + 1][j])
+            if self.solve_r(i + 1, j) == True:
+                return True
+            else:
+                current_cell.draw_move(self._cells[i + 1][j], undo=True)
+
+        # up
+        if j > 0 and not self._cells[i][j - 1].visited and not current_cell.has_top_wall:
+            current_cell.draw_move(self._cells[i][j - 1])
+            if self.solve_r(i, j - 1) == True:
+                return True
+            else:
+                current_cell.draw_move(self._cells[i][j - 1], undo=True)
+            
+        # down
+        if j < self.num_rows - 1 and not self._cells[i][j + 1].visited and not current_cell.has_bottom_wall:
+            current_cell.draw_move(self._cells[i][j + 1])
+            if self.solve_r(i, j + 1) == True:
+                return True
+            else:
+                current_cell.draw_move(self._cells[i][j + 1], undo=True)
+            
+            
+        
+
+        return False
+
 
 

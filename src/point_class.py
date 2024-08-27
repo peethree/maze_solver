@@ -1,6 +1,3 @@
-from tkinter import Tk, BOTH, Canvas
-
-
 class Point:
     def __init__(self, x, y):        
         self.x = x
@@ -14,4 +11,4 @@ class Line:
         self.p2 = p2
 
     def draw(self, canvas, fill_color="red"):
-        canvas.create_line(self.p1.x, self.p1.y, self.p2.x, self.p2.y, fill=fill_color, width=2)
+        canvas.create_line(self.p1.x, self.p1.y, self.p2.x, self.p2.y, fill=fill_color, width=3)
